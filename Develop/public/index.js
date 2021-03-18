@@ -108,7 +108,14 @@ function sendTransaction(isAdding) {
   //INDEX DB THIS ?????????????
   //IF offline, THEN add transaction to indexedDB
   //STOPPED HERE WEDS NIGHT 
+  //unshift mehtod adds one or more elements to beginning of an array and returns new length of the array 
   transactions.unshift(transaction);
+
+  if (localhost)
+
+
+
+
 
   // re-run logic to populate ui with new record
   populateChart();
@@ -175,16 +182,32 @@ request.onsuccess = (event) => {
 
   const transaction = db.transaction (["budget", "readwrite"])
   const budgetStore = transaction.objectStore("budget")
-  const statusIndex = budgetStore.index("statusIndex")
+  const statusIndex = budgetStore.index("statusIndex") //WTF IS GOING ON HERE
 
   budgetStore.add({listID: "", status: ""})
 
-  const getRequestIdx = statusIndex.getAll("addition")
-  getRequestIdx.onsuccess = () => {
-    console.log(getRequestIdx.result)
+  //cursor - do i need?
+  const getCursorRequest = budgetStore.openCursor()
+
+  getCursorRequest.onsuccess = e => {
+
+    const cursor = e.target.result
+    if (cursor) { 
+      console.log(cursor.value)
+      cursor.continue()
+    } else {
+      console.log("No transactions left!")
+    }
   }
-  const getRequestIdx = statusIndex.getAll("subtraction")
-  getRequestIdx.onsuccess = () => {
-    console.log(getRequestIdx.result)
+
+
+
+  const getRequestAdd = statusIndex.getAll("addition")
+  getRequestAdd.onsuccess = () => {
+    console.log(getRequestAdd.result)
+  }
+  const getRequestSub = statusIndex.getAll("subtraction")
+  getRequestSub.onsuccess = () => {
+    console.log(getRequestSub.result)
   }
 }
