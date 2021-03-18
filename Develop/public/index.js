@@ -105,6 +105,9 @@ function sendTransaction(isAdding) {
   }
 
   // add to beginning of current array of data
+  //INDEX DB THIS ?????????????
+  //IF offline, THEN add transaction to indexedDB
+  //STOPPED HERE WEDS NIGHT 
   transactions.unshift(transaction);
 
   // re-run logic to populate ui with new record
@@ -161,11 +164,27 @@ request.onupgradeneeded = ({ target}) => {
   const db = target.result
 
   //create an index, a quick reference to find info based on the field name specified 
-  const objectStore = db.createObjectStore("budget") 
+  const objectStore = db.createObjectStore("budget", {keyPath: "name"}) 
   //create an index called 'timestamp' that is going to let us query by 'timestamp'
-  objectStore.createIndex("timestamp", "timestamp")
+  objectStore.createIndex("amount", "amount")
+  objectStore.createIndex("addsub", "addsub")
 }
 
 request.onsuccess = (event) => {
-  console.log(request.result)
+  const db = request.result 
+
+  const transaction = db.transaction (["budget", "readwrite"])
+  const budgetStore = transaction.objectStore("budget")
+  const statusIndex = budgetStore.index("statusIndex")
+
+  budgetStore.add({listID: "", status: ""})
+
+  const getRequestIdx = statusIndex.getAll("addition")
+  getRequestIdx.onsuccess = () => {
+    console.log(getRequestIdx.result)
+  }
+  const getRequestIdx = statusIndex.getAll("subtraction")
+  getRequestIdx.onsuccess = () => {
+    console.log(getRequestIdx.result)
+  }
 }
