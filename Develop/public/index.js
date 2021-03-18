@@ -151,3 +151,21 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
+
+// indexedDB PORTION
+//create a db called budget and assigning a version
+const request = indexedDB.open("budget", 1)
+
+//create your object stores, where we will store our data
+request.onupgradeneeded = ({ target}) => {
+  const db = target.result
+
+  //create an index, a quick reference to find info based on the field name specified 
+  const objectStore = db.createObjectStore("budget") 
+  //create an index called 'timestamp' that is going to let us query by 'timestamp'
+  objectStore.createIndex("timestamp", "timestamp")
+}
+
+request.onsuccess = (event) => {
+  console.log(request.result)
+}
