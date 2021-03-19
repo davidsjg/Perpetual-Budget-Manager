@@ -105,17 +105,8 @@ function sendTransaction(isAdding) {
   }
 
   // add to beginning of current array of data
-  //INDEX DB THIS ?????????????
-  //IF offline, THEN add transaction to indexedDB
-  //STOPPED HERE WEDS NIGHT 
   //unshift method adds one or more elements to beginning of an array and returns new length of the array 
   transactions.unshift(transaction);
-
-  if (localhost)
-
-
-
-
 
   // re-run logic to populate ui with new record
   populateChart();
