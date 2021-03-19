@@ -108,7 +108,7 @@ function sendTransaction(isAdding) {
   //INDEX DB THIS ?????????????
   //IF offline, THEN add transaction to indexedDB
   //STOPPED HERE WEDS NIGHT 
-  //unshift mehtod adds one or more elements to beginning of an array and returns new length of the array 
+  //unshift method adds one or more elements to beginning of an array and returns new length of the array 
   transactions.unshift(transaction);
 
   if (localhost)
@@ -161,53 +161,3 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
-
-// indexedDB PORTION
-//create a db called budget and assigning a version
-const request = indexedDB.open("budget", 1)
-
-//create your object stores, where we will store our data
-request.onupgradeneeded = ({ target}) => {
-  const db = target.result
-
-  //create an index, a quick reference to find info based on the field name specified 
-  const objectStore = db.createObjectStore("budget", {keyPath: "name"}) 
-  //create an index called 'timestamp' that is going to let us query by 'timestamp'
-  objectStore.createIndex("amount", "amount")
-  objectStore.createIndex("addsub", "addsub")
-}
-
-request.onsuccess = (event) => {
-  const db = request.result 
-
-  const transaction = db.transaction (["budget", "readwrite"])
-  const budgetStore = transaction.objectStore("budget")
-  const statusIndex = budgetStore.index("statusIndex") //WTF IS GOING ON HERE
-
-  budgetStore.add({listID: "", status: ""})
-
-  //cursor - do i need?
-  const getCursorRequest = budgetStore.openCursor()
-
-  getCursorRequest.onsuccess = e => {
-
-    const cursor = e.target.result
-    if (cursor) { 
-      console.log(cursor.value)
-      cursor.continue()
-    } else {
-      console.log("No transactions left!")
-    }
-  }
-
-
-
-  const getRequestAdd = statusIndex.getAll("addition")
-  getRequestAdd.onsuccess = () => {
-    console.log(getRequestAdd.result)
-  }
-  const getRequestSub = statusIndex.getAll("subtraction")
-  getRequestSub.onsuccess = () => {
-    console.log(getRequestSub.result)
-  }
-}
