@@ -1,3 +1,10 @@
+const indexedDB =
+  window.indexedDB ||
+  window.mozIndexedDB ||
+  window.webkitIndexedDB ||
+  window.msIndexedDB ||
+  window.shimIndexedDB;
+  
 let db  
 //create a db called budget and assigning a version
 const request = indexedDB.open("budget", 1)
